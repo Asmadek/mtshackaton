@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Banana Manager</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" />
+
+    <style>
+      body {
+        background-color: #eceff1;
+        padding-top: 10em;
+      }
+
+
+      .widget {
+        box-shadow: 0 1px 4px 0 rgba(0,0,0,.1); 
+        background-color: #fff;
+        padding: 10px;
+        margin-bottom: 2em;
+      }
+
+      .widget-content {
+
+      }
+
+      #noMessage {
+        padding: 3em;
+        text-align: center;
+        color: #b1b1b1;
+      }
+
+      #hint {
+        padding: 0.3em;
+        font-size: 0.8em;
+        color: #AAA;
+      }
+    </style>
+</head>
+<body>
+
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8  col-md-offset-2" id="msgArea">        
+          <div id="noMessage"> Sorry, no message... </div>
+
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+
+        <div class="input-group">
+          
+          
+          <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." >
+          <span class="input-group-btn">
+            <button class="btn btn-primary btn-sm" id="btnSubmit">Send</button>
+          </span>
+        </div>
+        <div id="hint">Bot: Banana To: 156993</div>
+
+        <input type="hidden" id="bot">
+        <input type="hidden" id="to">
+
+    </div>
+  </div>
+</div>
+
+
+
+    <script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+  <script>
+
+      function reply(e) {
+        var sender = $(e);
+        if(sender.data('from') != 'telegram')  
+          return;
+
+       $('#to').val(sender.data('sender'));
+       $('#bot').val(sender.data('bot'));
+
+
+       $('#hint').html("To: " + sender.data('sender') + " Bot: " + sender.data('bot'));
+
+
+        $('#btn-input').focus();       
+      }
+
+      function BuildTemplateMsg(sender, bot, message, from) {
+          var template= '<div class="widget">'+
+            '<div class="widget-content container">'+
+                '<div class="row">'+
+                  '<div class="col-md-1">'+sender+'</div>'+
+                  '<div class="col-md-1">'+bot+'</div>'+
+                  '<div class="col-md-4">'+message+'</div>'+
+                  '<div class="col-md-1"><a href="#" onclick="reply(this);" data-sender="'+sender+'"" data-bot="'+bot+'"" data-from="'+from+'"">Reply</a></div>'+
+                  '</div>'+
+            '</div>'+
+          '</div>';
+
+
+          return template;
+      }
+
+
+      $(document).ready(function(){
+        var msgArea = $('#msgArea')
+        var elementMessage = $('#btn-input')
+        var webSocket = new WebSocket('ws://' + window.location.host + '/chat/index');
+
+        webSocket.onmessage = function(message) {
+            var data = JSON.parse(message.data)
+            $('#noMessage').hide();
+            if(data.bot == undefined) {
+              var userMsg= JSON.parse(data.message);
+              msgArea.append(BuildTemplateMsg("Me", "To > " + userMsg.to , userMsg.message, ""));
+            } else {
+              msgArea.append(BuildTemplateMsg(data.sender, data.bot, data.message, data.from));          
+            }
+        }
+        
+        var sendMsg = function() {
+            webSocket.send(JSON.stringify({
+              message: elementMessage.val(),
+              to: $('#to').val(),
+              bot: $('#bot').val()
+            }));
+
+            elementMessage.val("");
+        }
+
+        $('#btnSubmit').click(function(e) {
+          sendMsg();
+        });
+
+
+
+       elementMessage.on('keypress', function (e) {
+             if(e.which === 13){
+                sendMsg();
+             }
+        });
+
+
+      });
+  </script>
+</body>
+</html>
