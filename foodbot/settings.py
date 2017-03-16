@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chats',
     'channels',
-    'telepot'
+    'telepot',
+    'users'
 ]
 
 MIDDLEWARE = [
