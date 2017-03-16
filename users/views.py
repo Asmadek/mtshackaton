@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from users.models import *
 from django.core.exceptions import ObjectDoesNotExist
+import vk
+from datetime import datetime
 
 def show_candidate(request):
     candidate_id = request.GET['id']
@@ -84,3 +86,42 @@ def list_candidate(request):
     else:
         return HttpResponseRedirect('/')
     return render(request, 'isolenta/candidate_list.html', {'data': data})
+
+def vkapi(request):
+    session = vk.AuthSession(app_id='4928952', user_login='asmadek26@gmail.com', user_password='Byajhvfnbrf2012')
+    api = vk.API(session)
+    response = api.users.get(user_ids="elra_mado", fields="photo_max,city,bdate,education,universities,schools", name_case="Nom", version="5.62")
+    response = response[0]
+    print(response)
+
+    candidate = Person()
+    candidate.city = get_city_name(response['city'])
+    candidate.date_birth = get_bdate(response['bdate'])
+    candidate.university = get_university_by_name(response['university_name'])
+    candidate.photo_url = response['photo_max']
+    candidate.first_name = response['first_name']
+    candidate.last_name = response['last_name']
+    candidate.category = 0
+    candidate.chat_id = ""
+    candidate.telegram_id = ""
+    candidate.save()
+
+    return render(request, 'isolenta/vk_api.html', {'data': candidate})
+
+def get_city_name(city_id):
+    if city_id == 1:
+        return City.objects.get_or_create(name="Москва")[0]
+    else:
+        if city_id == 2:
+            return City.objects.get_or_create(name="Санкт-Петербург")[0]
+        else:
+            return City.objects.get_or_create(name="Екатеринбург")[0]
+
+def get_bdate(bdate):
+    if len(bdate) >= 8:
+        return datetime.strptime(bdate, '%d.%m.%Y')
+    else:
+        return None
+def get_university_by_name(university_name):
+    return University.objects.get_or_create(name=university_name, defaults={'rating': 100})[0]
+         
