@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}Список кандидатов{% endblock %}
+
+{% block content %}
+    <div class="sixteen wide column">
+        <h1>Список кандидатов</h1>
+        <div class="ui large middle aligned selection list">
+            {% for candidate in data.candidates %}
+                <div class="item" id="candidate-item">
+                    <img class="ui avatar image" src="{{candidate.photo_url}}">
+                    <div class="content">
+                        <a href="/candidates/show?id={{candidate.id}}" class="header">{{candidate.name}}</a>
+                        <div class="description">
+                            {% for vacancy in candidate.vacancies %}
+                                {{vacancy.vacancy.name}},
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            $(document).on("click", "#candidate-item", function(event) {
+                window.location = $(event.currentTarget).find("a").attr("href");
+            })
+        };
+    </script>
+{% endblock %}

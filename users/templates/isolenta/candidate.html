@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}Candidate{% endblock %}
+
+{% block content %}
+    <div class="ui grid">
+        <div class="four wide column"></div>
+        <div class="twelve wide column">
+            <h1>
+                {{ data.name }}
+                <small>{{ data.date_birth }}</small>
+            </h1>
+            <div>
+                <strong>Категория:</strong> {{ data.category }}
+            </div>
+            <div>
+                <strong>Университет:</strong> {{ data.university.name }}
+            </div>
+            <div>
+                <strong>Город:</strong> {{ data.city.name }}
+            </div>
+            <div>
+                <strong>Телефон:</strong> {{ data.phone_number }}
+            </div>
+            <div>
+                <strong>Телеграм:</strong> @{{ data.telegram_id }}
+            </div>
+            <div>
+                <strong>Результат тестрирования:</strong> {{ data.result }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

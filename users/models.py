@@ -28,7 +28,14 @@ class Person(models.Model):
     telegram_id = models.CharField(max_length= 128)
 
     photo_url = models.CharField(max_length = 128)
+    
+    @property
+    def vacancies(self):
+        return MarkedVacancy.objects.filter(person=self)
 
+    @property
+    def areas(self):
+        return MarkedArea.objects.filter(person=self)
 
 
 class Vacancy(models.Model):
