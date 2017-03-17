@@ -351,7 +351,7 @@ def get_city(bot, user, msg):
     moscow.save()
 
     try:
-        spb = City.objects.get(name = 'Санкт-Петерубрг')
+        spb = City.objects.get(name = 'Санкт-Петербург')
     except:
         spb = City(name = 'Санкт-Петерубрг')
 
@@ -396,10 +396,42 @@ def get_vk(bot, user, msg):
         bot.sendMessage(chat_id, 'Ваше vk id:', reply_markup = get_default_markup())
     else: 
         vk = get_text_message(bot, user, msg)
-        user.vk = vk
-        user.save()
         set_inner_state_a(user, '0')
-        # parse vk and save
+
+        try:
+            session = vk.AuthSession(app_id=vk, user_login='asmadek26@gmail.com', user_password='Byajhvfnbrf2012')
+            api = vk.API(session)
+            response = api.users.get(user_ids=vk, fields="photo_max,city,bdate,education,universities,schools", name_case="Nom", version="5.62")
+            response = response[0]
+            
+            user.vk = vk
+
+            try:
+                user.city = get_city_name(response['city'])
+            except KeyError:
+                pass
+        
+            try:
+                user.date_birth = get_bdate(response['bdate'])
+            except KeyError:
+                pass
+        
+            try:
+                user.university = get_university_by_name(response['university_name'])
+            except KeyError:
+                pass
+        
+            try:
+                user.photo_url = response['photo_max']
+            except KeyError:
+                pass
+
+            user.name = response['first_name'] + ' ' + response['last_name']
+            user.chat_id = chat_id
+            user.save()
+        
+        except:
+            pass
 
     return
 
@@ -490,6 +522,23 @@ class Logic:
 
         SM[state](bot,user, msg)
 
+def get_city_name(city_id):
+    if city_id == 1:
+        return City.objects.get_or_create(name="Москва")[0]
+    else:
+        if city_id == 2:
+            return City.objects.get_or_create(name="Санкт-Петербург")[0]
+        else:
+            return City.objects.get_or_create(name="Екатеринбург")[0]
+
+def get_bdate(bdate):
+    if len(bdate) >= 8:
+        return datetime.strptime(bdate, '%d.%m.%Y')
+    else:
+        return None
+
+def get_university_by_name(university_name):
+    return University.objects.get_or_create(name=university_name, defaults={'rating': 100})[0]
     
 
 # def has_vk(bot, user, msg):

@@ -97,10 +97,11 @@ def vkapi(request):
     candidate = Person()
     candidate.city = get_city_name(response['city'])
     candidate.date_birth = get_bdate(response['bdate'])
-    candidate.university = get_university_by_name(response['university_name'])
+    
+    if response['university_name'] != None:
+        candidate.university = get_university_by_name(response['university_name'])
     candidate.photo_url = response['photo_max']
-    candidate.first_name = response['first_name']
-    candidate.last_name = response['last_name']
+    candidate.name = response['first_name'] + ' ' + response['last_name']
     candidate.category = 0
     candidate.chat_id = ""
     candidate.telegram_id = ""
