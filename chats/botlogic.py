@@ -17,6 +17,17 @@ def send_options(bot, user, dict, question):
     bot.sendMessage(chat_id, question, reply_markup=ReplyKeyboardMarkup(keyboard=[custom_keyboard]))
     return
 
+def send_options_v(bot, user, dict, question):
+    chat_id = getattr(user, 'chat_id')
+    custom_keyboard = []
+
+    for key, value in dict.items():
+        custom_keyboard.append([KeyboardButton(text=key)])
+
+    bot.sendMessage(chat_id, question, reply_markup = ReplyKeyboardMarkup(keyboard=custom_keyboard))
+
+    return
+
 def get_options(bot, user, dict, msg):
     chat_id = getattr(user, 'chat_id')
     custom_keyboard = []
@@ -58,11 +69,16 @@ def get_proposal_1_1(bot, user, msg):
 
     bot.sendMessage(chat_id, 'Наиболее популярные направления: Разработка продуктов, Web-дизайн, Техническая поддержка', reply_markup = get_default_markup())
 
-    bot.sendMessage(chat_id, 'Поизучай http://it-uroki.ru/ www.it-world.ru/ https://habrahabr.ru/', reply_markup = get_default_markup())
+    bot.sendMessage(chat_id, 'Поизучай http://it-uroki.ru/', reply_markup = get_default_markup())
+    bot.sendMessage(chat_id, 'http://www.it-world.ru/', reply_markup = get_default_markup())
+    bot.sendMessage(chat_id, 'https://habrahabr.ru/', reply_markup = get_default_markup())
 
-    bot.sendMessage(chat_id, 'рекомендуемые ВУЗы: Иннополис, МГТУ им.Баумана, МФТИ', reply_markup = get_default_markup())
 
-    set_state(user, 'get_phone')
+      
+
+    bot.sendMessage(chat_id, 'Рекомендуемые ВУЗы: Иннополис, МГТУ им.Баумана, МФТИ', reply_markup = get_default_markup())
+
+    set_state_a(user, 'get_phone')
 
     return 
 
@@ -81,7 +97,7 @@ def get_proposal_1(bot, user, msg):
     if istate == '0':
         set_inner_state_a(user, '1')
 
-        send_options(bot, user, options, 'Что больше нравится:')
+        send_options_v(bot, user, options, 'Что больше нравится:')
         set_inner_state_a(user, '1')
     else: 
         value = get_options(bot, user, options, msg)
@@ -204,10 +220,10 @@ def test(bot, user, msg):
     state = getattr(user, 'state')
     istate = getattr(user, 'istate')
 
-    bot.sendMessage(chat_id, 'Мы рады сообщить, что у нас есть для тебя вакансия.')
+    bot.sendMessage(chat_id, 'Мы рады сообщить, что у нас есть для тебя вакансии. В ближайшее время с тобой свяжется рекрутер.')
 
-    set_state_a(user, 'get_phone')
-    get_phone(bot, user, msg)
+    # set_state_a(user, 'get_phone')
+    # get_phone(bot, user, msg)
     return
 
 
@@ -528,7 +544,7 @@ def get_area(bot, user, msg):
 
     if istate == '0':
         set_inner_state_a(user, '1')
-        send_options(bot, user, options, 'Выберите предпочитаюмую область')
+        send_options(bot, user, options, 'Выберите направление')
     else:
         value = get_options(bot, user, options, msg)
         
@@ -573,7 +589,7 @@ def get_type(bot, user, msg):
     if istate == '0':
         set_inner_state_a(user, '1')
 
-        send_options(bot, user, options, 'Какой тип работы?')
+        send_options(bot, user, options, 'Выберите тип работы:')
     else: 
         value = get_options(bot, user, options, msg)
         set_inner_state_a(user, '0')
@@ -667,14 +683,14 @@ def get_category(bot, user, msg):
 
     options =  {
                 'Школьник': 1,
-                'Студент': 2,
-                'Ни тот ни другой': 100
+                'Студент': 2
+                # 'Ни тот ни другой': 100
             }
 
     if istate == '0':
         set_inner_state_a(user, '1')
 
-        send_options(bot, user, options, 'Кем вы являетесь из нижеперечисленных категорий?')
+        send_options(bot, user, options, 'Выбери себя?')
         set_inner_state_a(user, '1')
     else: 
         try:
@@ -841,7 +857,7 @@ def get_name(bot, user, msg):
 
     if istate == '0':
         set_inner_state_a(user, '1')
-        bot.sendMessage(chat_id, 'Ваше имя:', reply_markup = get_default_markup())
+        bot.sendMessage(chat_id, 'Ваше имя и фамилия:', reply_markup = get_default_markup())
         return
     else: 
         try:
