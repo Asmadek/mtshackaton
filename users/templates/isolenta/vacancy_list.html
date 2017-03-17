@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Список вакансий{% endblock %}
+
+{% block content %}
+    <div class="ui grid">
+        <div class="four wide column"></div>
+        <div class="twelve wide column">
+            <div class="ui large middle aligned selection list" id="vacancy-list">
+                {% for vacancy in data.vacancies %}
+                    <div class="item">
+                        <div class="content">
+                            <a href="/vacancies/list" class="header">{{vacancy.name}}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            $(document).on("click", "#candidate-list", function(event) {
+                window.location = $(event.currentTarget).attr("href");
+            })
+        };
+    </script>
+{% endblock %}
