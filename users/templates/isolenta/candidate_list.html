@@ -1,32 +1,114 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} {% block title %}Список кандидатов{% endblock %} 
 
-{% block title %}Список кандидатов{% endblock %}
+{% block style %}
+<style type="text/css">
+    .ui.labeled.icon.menu {
+        margin: 0px;
+    }
+    
+    .ui.grid {
+        margin: 20px;
+    }
+    
+    .atlogo {
+        margin-left: 35px;
+        margin-top: 20px;
+        margin-bottom: -20px;
+    }
+    
+    .atlogoname {
+        font-size: 21px;
+        margin-left: 10px;
+        font-weight: bolder;
+    }
+    
+    small {
+        font-size: 12px;
+    }
+</style>
+{% endblock %} 
 
 {% block content %}
-    <div class="sixteen wide column">
-        <h1>Список кандидатов</h1>
-        <div class="ui large middle aligned selection list">
-            {% for candidate in data.candidates %}
-                <div class="item" id="candidate-item">
-                    <img class="ui avatar image" src="{{candidate.photo_url}}">
-                    <div class="content">
-                        <a href="/candidates/show?id={{candidate.id}}" class="header">{{candidate.name}}</a>
-                        <div class="description">
-                            {% for vacancy in candidate.vacancies %}
-                                {{vacancy.vacancy.name}},
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+<h1 class="ui header">Соискатели в Группу компаний МТС</h1>
+
+<div class="ui huge middle divided list">
+    {% for candidate in data.candidates %}
+
+    <div class="item">
+        <div class="right floated content">
+            <div class="ui icon buttons">
+                <button class="ui button">
+					<a href="/candidates/show?id={{candidate.id}}"><i class="user icon"></i></a>
+				  </button>
+                <button class="ui button">
+					<i class="comment icon"></i>
+				  </button>
+                <button class="ui button">
+					<i class="remove user icon"></i>
+				  </button>
+            </div>
+        </div>
+        <div class="right floated content">
+            <button class="ui olive basic button">В ожидании</button>
+            <button class="ui blue basic button">АХО</button>
+            <button class="ui green basic button">Выполнил работу</button>
+        </div>
+
+        <img class="ui avatar image" src="{{candidate.photo_url}}">
+        <div class="content">
+            <a href="/candidates/show?id={{candidate.id}}" class="header">{{candidate.name}}</a>
+            <div class="description"><small>{{candidate.category_title}} | добавил анкету 16.03.2017 в 18:45</small></div>
+
         </div>
     </div>
+    {% endfor %}
 
-    <script>
-        window.onload = function() {
-            $(document).on("click", "#candidate-item", function(event) {
-                window.location = $(event.currentTarget).find("a").attr("href");
-            })
-        };
-    </script>
+    <br><br>
+    <div class="ui pagination menu">
+        <a class="icon item">
+            <i class="left arrow icon"></i>
+        </a>
+        <a class="active item">
+    1
+  </a>
+        <div class="disabled item">
+            ...
+        </div>
+        <a class="item">
+    10
+  </a>
+        <a class="item">
+    11
+  </a>
+        <a class="item">
+    12
+  </a>
+        <a class="icon item">
+            <i class="right arrow icon"></i>
+        </a>
+    </div>
+</div>
+
+<script>
+    $('.ui.basic.modal')
+        .modal('show')
+        ;
+
+</script>
+<div class="ui basic modal">
+    <div class="ui icon header">
+        <i class="archive icon"></i> Archive Old Messages
+    </div>
+    <div class="content">
+        <p>Your inbox is getting full, would you like us to enable automatic archiving of old messages?</p>
+    </div>
+    <div class="actions">
+        <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i> No
+        </div>
+        <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i> Yes
+        </div>
+    </div>
+</div>
 {% endblock %}

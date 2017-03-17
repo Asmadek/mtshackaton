@@ -2,32 +2,172 @@
 
 {% block title %}Candidate{% endblock %}
 
+{% block style %}
+  <style type="text/css">
+	.ui.labeled.icon.menu
+	{
+	margin:0px;
+	}
+	.ui.grid
+	{
+	margin:20px;
+	}
+	.atlogo
+	{
+	margin-left: 35px;
+    margin-top: 20px;
+    margin-bottom: -20px;
+	}
+	.atlogoname
+	{
+	font-size:21px;
+	margin-left: 10px;
+	font-weight:bolder;
+	}
+	small
+	{
+	font-size:12px;
+	}
+  </style>
+{% endblock %}
+
 {% block content %}
-    <div class="ui grid">
-        <div class="four wide column"></div>
-        <div class="twelve wide column">
-            <h1>
-                {{ data.name }}
-                <small>{{ data.date_birth }}</small>
-            </h1>
-            <div>
-                <strong>Категория:</strong> {{ data.category }}
-            </div>
-            <div>
-                <strong>Университет:</strong> {{ data.university.name }}
-            </div>
-            <div>
-                <strong>Город:</strong> {{ data.city.name }}
-            </div>
-            <div>
-                <strong>Телефон:</strong> {{ data.phone_number }}
-            </div>
-            <div>
-                <strong>Телеграм:</strong> @{{ data.telegram_id }}
-            </div>
-            <div>
-                <strong>Результат тестрирования:</strong> {{ data.result }}
-            </div>
+    <div class="three wide column">
+
+      <!--  АНКЕТА Сотрудник  -->
+      <div class="ui card">
+        <div class="image">
+          <img src="{{data.photo_url}}">
         </div>
+        <div class="content">
+          <a class="header">{{data.name}}</a>
+          <div class="meta">
+            <span class="date">Дата рождения: {{data.date_birth}} (31 год)</span>
+
+          </div>
+          <div class="description">
+            {{data.category_title}}
+          </div>
+        </div>
+        <div class="extra content">
+          <a>
+            <i class="user icon"></i> Россия / {{data.city.name}}
+          </a>
+        </div>
+      </div>
+      <div class="ui large buttons">
+        <button class="ui button">Начать чат</button>
+        <div class="or"></div>
+        <button class="ui button">Позвонить</button>
+      </div>
+    </div>
+
+    <div class="eleven wide column">
+      <h4>Основное</h4>
+      <table class="ui table">
+        <tbody>
+          <tr>
+            <td class="collapsing">
+              <i class="folder icon"></i> Оценка по заданию
+            </td>
+            <td>
+              {{data.result}}% <br>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <i class="folder icon"></i> Вакансия
+            </td>
+            <td>
+                {% for vacancy in candidate.vacancies %}
+                    <div class="ui brown label">
+                        {{vacancy.vacancy.name}}
+                    </div>
+                {% endfor %}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <i class="folder icon"></i> Направление </td>
+            <td>
+                {% for area in candidate.areas %}
+                    <div class="ui label">
+                        {{area.area.name}}
+                    </div>
+                {% endfor %}
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <i class="folder icon"></i> Email
+            </td>
+            <td>mara@mail.ru</td>
+          </tr>
+          <tr>
+            <td>
+              <i class="folder icon"></i> Телефон
+            </td>
+            <td>{{data.phone_number}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <h4><i class="vk icon"></i>Вконтакте</h4>
+      <table class="ui table">
+        <tbody>
+            <tr>
+              <td>
+                <i class="folder icon"></i>Интересы</td>
+              <td>Люблю спорт и пряники</td>
+            </tr>
+            <tr>
+              <td>
+                <i class="folder icon"></i>О себе
+              </td>
+              <td>Я большая и хорошая</td>
+            </tr>
+            <tr>
+              <td>
+                <i class="folder icon"></i>Языки
+              </td>
+              <td>Английский, Немецкий</td>
+            </tr>
+            <tr>
+              <td>
+                <i class="folder icon"></i>ВУЗ
+              </td>
+              <td> {{data.university.name}}
+                <br>
+                <h4>Сотрудники МТС из этого ВУЗа</h4>
+
+                <table class="ui celled padded table">
+                  <thead>
+                    <tr>
+                      <th>Сотрудник</th>
+                      <th>Оценка</th>
+                      <th>Департамент</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <h4 class="ui image header">
+                          <img src="images/avatar/image-14.png" class="ui mini rounded image">
+                          <div class="content">
+                            Михайлова Елена
+                            <div class="sub header">Старший специалист</div>
+                          </div>
+                        </h4>
+                      </td>
+                      <td>
+                        <h2 class="ui center aligned header">A+</h2>
+                      </td>
+                      <td>Департамента по связям с общественностью</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+        </tbody>
+      </table>
     </div>
 {% endblock %}
