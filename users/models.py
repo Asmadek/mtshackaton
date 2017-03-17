@@ -2,10 +2,9 @@ from django.db import models
 
 # Create your models here.
 
-
 class University(models.Model):
     name = models.CharField(max_length=500)
-    rating = models.IntegerField()
+    rating = models.IntegerField(null = True, blank=True)
 
 class Area(models.Model):
     name = models.CharField(max_length=128)
@@ -16,18 +15,21 @@ class City(models.Model):
 class Person(models.Model):
     """docstring for Person"""
     name = models.CharField(max_length=128)
-    date_birth = models.DateField()
-    category = models.IntegerField()
+    date_birth = models.DateField(null=True)
+    category = models.IntegerField(null=True, blank=True)
 
-    university = models.ForeignKey(University)
+    university = models.ForeignKey(University, null=True)
     vk = models.CharField(max_length=128)
 
-    city = models.ForeignKey(City)
-    phone_number = models.CharField(max_length=15)    
-    chat_id = models.CharField(max_length=128)
+    city = models.ForeignKey(City, null=True)
+    phone_number = models.CharField(max_length=15, blank=True)    
+    chat_id = models.CharField(max_length=128, blank=True)
     telegram_id = models.CharField(max_length= 128)
 
     photo_url = models.CharField(max_length = 128)
+
+    state = models.CharField(max_length=128, blank=True)
+    istate = models.CharField(max_length=128, blank=True)
 
 
 
@@ -52,6 +54,8 @@ class Answer(models.Model):
 
 
 
+
+
 class Result(models.Model):
     area = models.ForeignKey(Area)
     person = models.ForeignKey(Person)
@@ -64,3 +68,4 @@ class MarkedVacancy(models.Model):
 class MarkedArea(models.Model):
     person = models.ForeignKey(Person)    
     area = models.ForeignKey(Area)
+    

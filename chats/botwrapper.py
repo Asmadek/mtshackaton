@@ -1,7 +1,11 @@
 import telepot
 from channels.channel import Group
-
+from users.models import Person, City
 import json
+from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, ForceReply
+import uuid
+from chats.botlogic import Logic
+
 
 class BotWrapper:
 
@@ -12,51 +16,27 @@ class BotWrapper:
         self.bot.message_loop(self.handle)
 
     def handle(self, msg):
-        content_type, chat_type, chat_id = telepot.glance(msg)
+        content_type, chat_type, chat_id= telepot.glance(msg)
         #  print(content_type, chat_type, chat_id)
 
-        if content_type == 'text':
-            #  print(msg['text'])
-            Group('chat').send({
-                'text': json.dumps({
-                'message': msg['text'],
-                'sender': chat_id,
-                'from': 'telegram',
-                'bot': self.namaname
-            })})
-
+        from_username = msg['from']['username']
+        from_id  = msg['from']['id']
+        l = Logic()
+        user = self.try_get_user(from_id, chat_id)
+        l.state_machine(self.bot, user, msg)
+        return
 
     # try find if user already exist
-    def try_get_user(self):
-        print('test')
+    def try_get_user(self, from_id, chat_id):
+        try:
+            user = Person.objects.get(telegram_id=from_id)
+            print('already exist')
+        except:
+            l = Logic()
+            user = Person(telegram_id = from_id, chat_id=chat_id)
+            l.set_state(user, 'init')
+            l.set_inner_state(user, '0')
+            user.save()
 
-    # get info by vk
-    def try_set_info_by_vk(self, user):
-        print('test')
-
-    # get information by direct questions
-    def set_info(self, user):
-        print('test')
-
-    # get category (student, oldest) by direct questions
-    def get_category(self, user):
-        print('test')
-
-    def set_university(self, user):
-        print('test')
-
-    def set_areas(self, user):
-        print('test')
-
-    def testing(self, user, area):
-        print('test')
-
-    def send_decline(self, user):
-        print('test')
-
-    def set_marked_vacancies(self, user):
-        print('test')
-        
-    def set_phone_number(self, user):
-        print('test')
-
+        print(user)
+        return user
