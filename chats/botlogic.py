@@ -17,6 +17,17 @@ def send_options(bot, user, dict, question):
     bot.sendMessage(chat_id, question, reply_markup=ReplyKeyboardMarkup(keyboard=[custom_keyboard]))
     return
 
+def send_options_v(bot, user, dict, question):
+    chat_id = getattr(user, 'chat_id')
+    custom_keyboard = []
+
+    for key, value in dict.items():
+        custom_keyboard.append([KeyboardButton(text=key)])
+
+    bot.sendMessage(chat_id, question, reply_markup = ReplyKeyboardMarkup(keyboard=custom_keyboard))
+
+    return
+
 def get_options(bot, user, dict, msg):
     chat_id = getattr(user, 'chat_id')
     custom_keyboard = []
@@ -67,7 +78,7 @@ def get_proposal_1_1(bot, user, msg):
 
     bot.sendMessage(chat_id, 'рекомендуемые ВУЗы: Иннополис, МГТУ им.Баумана, МФТИ', reply_markup = get_default_markup())
 
-    set_state(user, 'get_phone')
+    set_state_a(user, 'get_phone')
 
     return 
 
@@ -86,7 +97,7 @@ def get_proposal_1(bot, user, msg):
     if istate == '0':
         set_inner_state_a(user, '1')
 
-        send_options(bot, user, options, 'Что больше нравится:')
+        send_options_v(bot, user, options, 'Что больше нравится:')
         set_inner_state_a(user, '1')
     else: 
         value = get_options(bot, user, options, msg)
@@ -209,10 +220,10 @@ def test(bot, user, msg):
     state = getattr(user, 'state')
     istate = getattr(user, 'istate')
 
-    bot.sendMessage(chat_id, 'Мы рады сообщить, что у нас есть для тебя вакансия.')
+    bot.sendMessage(chat_id, 'Мы рады сообщить, что у нас есть для тебя вакансии. В ближайшее время с тобой свяжется рекрутер.')
 
-    set_state_a(user, 'get_phone')
-    get_phone(bot, user, msg)
+    # set_state_a(user, 'get_phone')
+    # get_phone(bot, user, msg)
     return
 
 
@@ -718,7 +729,7 @@ def get_photo(bot, user, msg):
             return
         else:
             try:
-                filename =  '/images/' + str(uuid.uuid1()) + ".png"
+                filename =  '/static/images/' + str(uuid.uuid1()) + ".png"
                 saveto = str(uuid.uuid1()) + ".png"
 
                 bot.download_file(msg['photo'][-1]['file_id'], './images/' + saveto)
@@ -846,7 +857,7 @@ def get_name(bot, user, msg):
 
     if istate == '0':
         set_inner_state_a(user, '1')
-        bot.sendMessage(chat_id, 'Ваше имя:', reply_markup = get_default_markup())
+        bot.sendMessage(chat_id, 'Ваше имя и фамилия:', reply_markup = get_default_markup())
         return
     else: 
         try:
