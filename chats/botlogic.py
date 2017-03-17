@@ -58,7 +58,12 @@ def get_proposal_1_1(bot, user, msg):
 
     bot.sendMessage(chat_id, 'Наиболее популярные направления: Разработка продуктов, Web-дизайн, Техническая поддержка', reply_markup = get_default_markup())
 
-    bot.sendMessage(chat_id, 'Поизучай http://it-uroki.ru/ www.it-world.ru/ https://habrahabr.ru/', reply_markup = get_default_markup())
+    bot.sendMessage(chat_id, 'Поизучай http://it-uroki.ru/', reply_markup = get_default_markup())
+    bot.sendMessage(chat_id, 'http://www.it-world.ru/', reply_markup = get_default_markup())
+    bot.sendMessage(chat_id, 'https://habrahabr.ru/', reply_markup = get_default_markup())
+
+
+      
 
     bot.sendMessage(chat_id, 'рекомендуемые ВУЗы: Иннополис, МГТУ им.Баумана, МФТИ', reply_markup = get_default_markup())
 
