@@ -20,7 +20,7 @@ def ws_connect(message):
 
 def ws_message(message):
     msg = json.loads(message.content['text'])
-    # print(msg)
+    print(msg)
 
     if 'to' in msg:
         print('hasattr')
@@ -32,6 +32,8 @@ def ws_message(message):
             TOKEN = '342362127:AAEXUguhhuAPO2I82D2HilSvp2X6tSj-XAY'
         elif msg['bot'] == 'cheese':
             TOKEN = '306868573:AAGZ0Jx1G32mJOicDzqbgwvLRdrdySh3vzs'
+        elif msg['bot'] == 'assistant':
+            TOKEN = '357131666:AAHcYHgT57ibjUPP2AlB0M_z2STtDLI-O7M'
             
         bot = telepot.Bot(TOKEN)
         bot.sendMessage(msg['to'], msg['message'])

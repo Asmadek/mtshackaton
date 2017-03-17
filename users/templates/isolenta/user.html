@@ -1,57 +1,94 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html>
 
-{% block title %}Candidate{% endblock %}
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-{% block style %}
+  <!-- Site Properties -->
+  <title>Анкета сотрудника</title>
+
+  <link rel="stylesheet" type="text/css" href="css/dist/semantic.min.css">
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+  <script src="css/dist/semantic.min.js"></script>
+
   <style type="text/css">
-	.ui.labeled.icon.menu
-	{
-	margin:0px;
-	}
-	.ui.grid
-	{
-	margin:20px;
-	}
-	.atlogo
-	{
-	margin-left: 35px;
-    margin-top: 20px;
-    margin-bottom: -20px;
-	}
-	.atlogoname
-	{
-	font-size:21px;
-	margin-left: 10px;
-	font-weight:bolder;
-	}
-	small
-	{
-	font-size:12px;
-	}
+    .ui.labeled.icon.menu {
+      margin: 0px;
+    }
+    
+    .ui.grid {
+      margin: 20px;
+    }
+    
+    .atlogo {
+      margin-left: 35px;
+      margin-top: 20px;
+      margin-bottom: -20px;
+    }
+    
+    .atlogoname {
+      font-size: 21px;
+      margin-left: 10px;
+      font-weight: bolder;
+    }
+    
+    small {
+      font-size: 12px;
+    }
   </style>
-{% endblock %}
 
-{% block content %}
+</head>
+
+<body>
+  <div class="atlogo">
+    <img class="ui middle aligned tiny image" src="images/logo_b.png">
+    <span class="atlogoname">EASY.Lenta</span>
+  </div>
+
+  <div class="ui grid">
+    <div class="left two wide column">
+      <p>
+        <!--  MENU -->
+        <div class="ui blue left vertical inverted labeled icon menu">
+          <a href="index.html" class="item">
+            <i class="browser icon"></i> Главная
+          </a>
+          <a href="people.html" class="blue item active">
+            <i class="users icon"></i> Сотрудники
+          </a>
+          <a href="calend.html" class="item">
+            <i class="calendar icon"></i> Календарь встреч
+          </a>
+          <a href="chat.html" class="item">
+            <i class="comment icon"></i> Чат комнаты
+          </a>
+        </div>
+      </p>
+    </div>
     <div class="three wide column">
 
       <!--  АНКЕТА Сотрудник  -->
       <div class="ui card">
         <div class="image">
-          <img src="{{data.photo_url}}">
+          <img src="images/avatar/image-4.png">
         </div>
         <div class="content">
-          <a class="header">{{data.name}}</a>
+          <a class="header">Маша Зоркина</a>
           <div class="meta">
-            <span class="date">Дата рождения: {{data.date_birth}} (31 год)</span>
+            <span class="date">Дата рождения: 15.02.1985 (31 год)</span>
 
           </div>
           <div class="description">
-            {{data.category_title}}
+            Студент
           </div>
         </div>
         <div class="extra content">
           <a>
-            <i class="user icon"></i> Россия / {{data.city.name}}
+            <i class="user icon"></i> Россия / Москва
           </a>
         </div>
       </div>
@@ -60,9 +97,12 @@
         <div class="or"></div>
         <button class="ui button">Позвонить</button>
       </div>
+
+
     </div>
 
     <div class="eleven wide column">
+
       <h4>Основное</h4>
       <table class="ui table">
         <tbody>
@@ -71,7 +111,8 @@
               <i class="folder icon"></i> Оценка по заданию
             </td>
             <td>
-              {{data.result}}% <br>
+              80% <br>
+              <a href="#">18 правильных</a>
             </td>
           </tr>
           <tr>
@@ -79,22 +120,21 @@
               <i class="folder icon"></i> Вакансия
             </td>
             <td>
-                {% for vacancy in candidate.vacancies %}
-                    <div class="ui brown label">
-                        {{vacancy.vacancy.name}}
-                    </div>
-                {% endfor %}
+              <div class="ui brown label">
+                Маркетолог
+              </div>
             </td>
           </tr>
           <tr>
             <td>
               <i class="folder icon"></i> Направление </td>
             <td>
-                {% for area in candidate.areas %}
-                    <div class="ui label">
-                        {{area.area.name}}
-                    </div>
-                {% endfor %}
+              <div class="ui label">
+                Техника
+              </div>
+              <div class="ui label">
+                Маркетинг
+              </div>
             </td>
           </tr>
           <tr>
@@ -107,13 +147,18 @@
             <td>
               <i class="folder icon"></i> Телефон
             </td>
-            <td>{{data.phone_number}}</td>
+            <td>+ 7 910 733 29 62 (МТС)</td>
           </tr>
         </tbody>
       </table>
       <h4><i class="vk icon"></i>Вконтакте</h4>
       <table class="ui table">
         <tbody>
+          <tr>
+            <td class="collapsing">
+              <i class="folder icon"></i>Телефон
+            </td>
+            <td>+ 7 910 733 29 62 (МТС)</td>
             <tr>
               <td>
                 <i class="folder icon"></i>Интересы</td>
@@ -135,9 +180,12 @@
               <td>
                 <i class="folder icon"></i>ВУЗ
               </td>
-              <td> {{data.university.name}}
+              <td> Московский государственный университет
                 <br>
                 <h4>Сотрудники МТС из этого ВУЗа</h4>
+
+
+
 
                 <table class="ui celled padded table">
                   <thead>
@@ -165,9 +213,36 @@
                     </tr>
                   </tbody>
                 </table>
+
+
+
+
+
+
+
+
               </td>
             </tr>
         </tbody>
       </table>
+
     </div>
-{% endblock %}
+
+
+
+
+
+
+  </div>
+  </p>
+  </div>
+  </div>
+
+
+
+
+
+
+</body>
+
+</html>

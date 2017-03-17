@@ -37,7 +37,7 @@ def show_candidate(request):
             }
     else:
         return HttpResponseRedirect('/')
-    return render(request, 'isolenta/candidate.html', {'data': data})
+    return render(request, 'isolenta/candidate.html', {'data': data, 'candidate': candidate})
 
 def get_category_name(category_id):
     if category_id == 1:

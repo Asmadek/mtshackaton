@@ -38,6 +38,16 @@ class Person(models.Model):
     @property
     def areas(self):
         return MarkedArea.objects.filter(person=self)
+   
+    @property
+    def category_title(self):
+        if self.category == 1:
+            return "Школьник"
+        elif self.category == 2:
+            return "Студент"
+        else: 
+            return "Другое"
+
 
     state = models.CharField(max_length=128, blank=True)
     istate = models.CharField(max_length=128, blank=True)

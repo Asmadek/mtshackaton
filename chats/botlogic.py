@@ -2,7 +2,8 @@ from users.models import Person, City, University, Area, MarkedArea, Vacancy, Ma
 import telepot
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, ForceReply
 import uuid
-
+import vk
+from datetime import datetime
 def get_default_markup():
     return ReplyKeyboardRemove()
 
@@ -782,48 +783,53 @@ def get_vk(bot, user, msg):
     chat_id = getattr(user, 'chat_id')
     state = getattr(user, 'state')
     istate = getattr(user, 'istate')
-
+    print(istate)
     if istate == '0':
         set_inner_state_a(user, '1')
         bot.sendMessage(chat_id, 'Ваше vk id:', reply_markup = get_default_markup())
     else: 
-        vk = get_text_message(bot, user, msg)
+        vk_id = get_text_message(bot, user, msg)
         set_inner_state_a(user, '0')
+        print(vk_id)
+        try:
+            session = vk.AuthSession(app_id="4928952", user_login='asmadek26@gmail.com', user_password='Byajhvfnbrf2012')
+            api = vk.API(session)
+            response = api.users.get(user_ids=vk_id, fields="photo_max,city,bdate,education,universities,schools", name_case="Nom", version="5.62")
+            response = response[0]
+        except KeyError:
+            pass
+
+        user.vk = vk_id
 
         try:
-            session = vk.AuthSession(app_id=vk, user_login='asmadek26@gmail.com', user_password='Byajhvfnbrf2012')
-            api = vk.API(session)
-            response = api.users.get(user_ids=vk, fields="photo_max,city,bdate,education,universities,schools", name_case="Nom", version="5.62")
-            response = response[0]
-            
-            user.vk = vk
-
-            try:
-                user.city = get_city_name(response['city'])
-            except KeyError:
-                pass
-        
-            try:
-                user.date_birth = get_bdate(response['bdate'])
-            except KeyError:
-                pass
-        
-            try:
-                user.university = get_university_by_name(response['university_name'])
-            except KeyError:
-                pass
-        
-            try:
-                user.photo_url = response['photo_max']
-            except KeyError:
-                pass
-
-            user.name = response['first_name'] + ' ' + response['last_name']
-            user.chat_id = chat_id
-            user.save()
-        
-        except:
+            user.city = get_city_name(response['city'])
+        except KeyError:
             pass
+        try:
+            user.date_birth = get_bdate(response['bdate'])
+        except KeyError:
+            pass
+        try:
+            user.university = get_university_by_name(response['university_name'])
+        except KeyError:
+            pass
+        try:
+            user.photo_url = response['photo_max']
+        except KeyError:
+            pass
+        
+        try:
+            user.name = response['first_name'] + ' ' + response['last_name']
+        except KeyError:
+            pass
+            
+        user.chat_id = chat_id
+
+        set_inner_state_a(user, '0')
+        set_state_a(user, 'get_category')
+        user.save()
+
+        get_category(bot, user, msg)
 
     return
 
