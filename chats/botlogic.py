@@ -76,7 +76,7 @@ def get_proposal_1_1(bot, user, msg):
 
       
 
-    bot.sendMessage(chat_id, 'рекомендуемые ВУЗы: Иннополис, МГТУ им.Баумана, МФТИ', reply_markup = get_default_markup())
+    bot.sendMessage(chat_id, 'Рекомендуемые ВУЗы: Иннополис, МГТУ им.Баумана, МФТИ', reply_markup = get_default_markup())
 
     set_state_a(user, 'get_phone')
 
@@ -544,7 +544,7 @@ def get_area(bot, user, msg):
 
     if istate == '0':
         set_inner_state_a(user, '1')
-        send_options(bot, user, options, 'Выберите предпочитаюмую область')
+        send_options(bot, user, options, 'Выберите направление')
     else:
         value = get_options(bot, user, options, msg)
         
@@ -589,7 +589,7 @@ def get_type(bot, user, msg):
     if istate == '0':
         set_inner_state_a(user, '1')
 
-        send_options(bot, user, options, 'Какой тип работы?')
+        send_options(bot, user, options, 'Выберите тип работы:')
     else: 
         value = get_options(bot, user, options, msg)
         set_inner_state_a(user, '0')
@@ -683,14 +683,14 @@ def get_category(bot, user, msg):
 
     options =  {
                 'Школьник': 1,
-                'Студент': 2,
-                'Ни тот ни другой': 100
+                'Студент': 2
+                # 'Ни тот ни другой': 100
             }
 
     if istate == '0':
         set_inner_state_a(user, '1')
 
-        send_options(bot, user, options, 'Кем вы являетесь из нижеперечисленных категорий?')
+        send_options(bot, user, options, 'Выбери себя?')
         set_inner_state_a(user, '1')
     else: 
         try:
