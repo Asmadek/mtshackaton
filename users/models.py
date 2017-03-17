@@ -28,6 +28,9 @@ class Person(models.Model):
 
     photo_url = models.CharField(max_length = 128)
     
+
+    attr = models.CharField(max_length = 128, null=True, blank=True)
+
     @property
     def vacancies(self):
         return MarkedVacancy.objects.filter(person=self)
@@ -45,6 +48,7 @@ class Vacancy(models.Model):
     area = models.ForeignKey(Area)
     name = models.CharField(max_length=256)
     has_internship = models.BooleanField()
+    attr = models.CharField(max_length= 256, null=True, blank=True)
 
 
 class Test(models.Model):
@@ -76,4 +80,4 @@ class MarkedVacancy(models.Model):
 class MarkedArea(models.Model):
     person = models.ForeignKey(Person)    
     area = models.ForeignKey(Area)
-    
+
