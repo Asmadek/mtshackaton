@@ -22,7 +22,11 @@ def startup():
     # print('start telegram bot')
     # appleTalker = BotWrapper('apple', '251927694:AAE7JxhJP8tjvzNxreIKQXgdRA3Cc0cnVEQ')
 
+<<<<<<< HEAD
     hr_assistant = BotWrapper('assistant', '357131666:AAHcYHgT57ibjUPP2AlB0M_z2STtDLI-O7M')
+=======
+    hr_assistant = BotWrapper('assistant', '357768893:AAHCQM6l50c-5739D40viWL2b7-ERk7ffOA')
+>>>>>>> 1a02a3bd2901129b67255b88220e0ad80d22b18d
     # cheeseTalker = BotWrapper('cheese', '306868573:AAGZ0Jx1G32mJOicDzqbgwvLRdrdySh3vzs')
 
     # chickenTalker = BotWrapper('chicken', '342362127:AAEXUguhhuAPO2I82D2HilSvp2X6tSj-XAY')

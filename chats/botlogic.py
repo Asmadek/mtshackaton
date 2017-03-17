@@ -1,4 +1,4 @@
-from users.models import Person, City, University
+from users.models import Person, City, University, Area, MarkedArea, Vacancy, MarkedVacancy
 import telepot
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, ForceReply
 import uuid
@@ -141,8 +141,71 @@ def get_proposal_3(bot, user, msg):
             # get_proposal_2(bot, user, msg)
             
     return
-    
 
+def accept(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    bot.sendMessage(chat_id, 'Спасибо! С вами свяжутся в ближайшее время.')
+
+    return
+
+
+def get_phone(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    if istate == '0':
+        bot.sendMessage(chat_id, "Введите Ваш номер телефона:", reply_markup = get_default_markup())
+        set_inner_state_a(user, '1')
+    else:
+        try:
+            phone = get_text_message(bot, user, msg)
+            user.phone = phone
+            set_inner_state_a(user, '0')
+            user.save()
+            set_state_a(user, 'accept')
+            accept(bot, user, msg)
+        except:
+            set_inner_state_a(user, '0')
+
+    return
+
+def get_vacancies(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+    attr = getattr(user, 'attr')
+    vacancies = Vacancy.objects.filter(attr  =  attr)
+
+    options = {}
+
+    for vacancy in vacancies:
+        options[getattr(vacancy, 'name')] = vacancy
+
+
+    if istate == '0':
+        set_inner_state_a(user, '1')
+        send_options(bot, user, options, 'Что Вам интереснее?')
+    else:
+        value = get_options(bot, user, options, msg)
+        markedVacancy = MarkedVacancy(person = user, vacancy = value)
+
+        markedVacancy.save()
+
+        set_inner_state_a(user, '0')
+        if attr != 'Разработчик' and attr != 'Product owner' and attr != 'Дизайнер':
+            set_state_a(user, 'get_phone')
+            get_phone(bot, user, msg)
+        else: 
+            print('testing started')
+
+    return
 
 
 def get_season_work(bot, user, msg):
@@ -175,11 +238,282 @@ def get_season_work(bot, user, msg):
 
     return
 
+def get_attr_pr_2(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    options = {
+        'Придумать слоган к продукту "изолента"': 1,
+        'Собрать фокус-группу и собрать мнения о том как лучше описать продукт "изолента"': 2
+    }
+
+    if istate == '0':
+        set_inner_state_a(user, '1')
+        send_options(bot, user, options, 'Вам легче?')
+    else:
+        try:
+            value = get_options(bot, user, options, msg)
+            
+            if value == 1:
+                user.attr = 'Реклама'
+                user.save()
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_vacancies')
+                get_vacancies(bot, user, msg)
+            elif value == 2:
+                user.attr = 'Опросы'
+                user.save()
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_vacancies')
+                get_vacancies(bot, user, msg)
+            else:
+                set_inner_state_a(user, '0')
+        except:
+            print ('try again')
+
+
+    return
+
+
+def get_attr_pr(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    options = {
+        'Да': 1,
+        'Нет': 2
+    }
+
+    if istate == '0':
+        set_inner_state_a(user, '1')
+        send_options(bot, user, options, 'Вы активно пользуетесь соцсетями, у вас куча лайков и репостов?')
+    else:
+        try:
+            value = get_options(bot, user, options, msg)
+            
+            if value == 1:
+                user.attr =  'SMM'
+                user.save()
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_vacancies')
+                get_vacancies(bot, user, msg)
+            elif value == 2:
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_attr_pr_2')
+                get_attr_pr_2(bot, user, msg)
+            else:
+                set_inner_state_a(user, '0')
+        except:
+            print ('try again')
+
+
+    return
+
+
+
+def get_attr_med_2(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    options = {
+        'Проводить время с детьми, помогать им': 1,
+        'Помогать взрослым людям': 2
+    }
+
+    if istate == '0':
+        set_inner_state_a(user, '1')
+        send_options(bot, user, options, 'Вам больше нравится:')
+    else:
+        try:
+            value = get_options(bot, user, options, msg)
+            
+            if value == 1:
+                user.attr = 'Педиатрия'
+                user.save()
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_vacancies')
+                get_vacancies(bot, user, msg)
+            elif value == 2:
+                user.attr = 'Сестринское дело'
+                user.save()
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_vacancies')
+                get_vacancies(bot, user, msg)
+            else:
+                set_inner_state_a(user, '0')
+        except:
+            print ('try again')
+
+
+    return
+
+
+
+def get_attr_med(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    options = {
+        'Да': 1,
+        'Нет': 2
+    }
+
+    if istate == '0':
+        set_inner_state_a(user, '1')
+        send_options(bot, user, options, 'Вы считаете что самая важная задача человечества - это гигиена полости рта?')
+    else:
+        try:
+            value = get_options(bot, user, options, msg)
+            
+            if value == 1:
+                user.attr =  'Стоматология'
+                user.save()
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_vacancies')
+                get_vacancies(bot, user, msg)
+            elif value == 2:
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_attr_med_2')
+                get_attr_med_2(bot, user, msg)
+            else:
+                set_inner_state_a(user, '0')
+        except:
+            print ('try again')
+
+
+    return
+
+
+
+def get_attr_it_2(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    options = {
+        'Управлять вселенной': 1,
+        'Рисовать идеально красивых для пользователя кис': 2
+    }
+
+    if istate == '0':
+        set_inner_state_a(user, '1')
+        send_options(bot, user, options, 'Вам больше нравится:')
+    else:
+        try:
+            value = get_options(bot, user, options, msg)
+            
+            if value == 1:
+                user.attr = 'Product owner'
+                user.save()
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_vacancies')
+                get_vacancies(bot, user, msg)
+            elif value == 2:
+                user.attr = 'Дизайнер'
+                user.save()
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_vacancies')
+                get_vacancies(bot, user, msg)
+            else:
+                set_inner_state_a(user, '0')
+        except:
+            print ('try again')
+
+
+    return
+
+
+
+def get_attr_it(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    options = {
+        'Да': 1,
+        'Нет': 2
+    }
+
+    if istate == '0':
+        set_inner_state_a(user, '1')
+        send_options(bot, user, options, 'Вам нравиться кодить сутками напролет?')
+    else:
+        try:
+            value = get_options(bot, user, options, msg)
+            
+            if value == 1:
+                user.attr =  'Разработчик'
+                user.save()
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_vacancies')
+                get_vacancies(bot, user, msg)
+            elif value == 2:
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_attr_it_2')
+                get_attr_it_2(bot, user, msg)
+            else:
+                set_inner_state_a(user, '0')
+        except:
+            print ('try again')
+
+
+    return
+
+
+
+def get_area(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+    areas = Area.objects.all()
+
+    options = {
+        'PR': 'pr',
+        'Medicine': 'med',
+        'IT': 'it',
+    }
+
+
+    if istate == '0':
+        set_inner_state_a(user, '1')
+        send_options(bot, user, options, 'Выберите предпочитаюмую область')
+    else:
+        value = get_options(bot, user, options, msg)
+        
+        if value == 'pr':
+            set_inner_state_a(user, '0')
+            set_state_a(user, 'get_attr_pr')
+            get_attr_pr(bot, user, msg)
+        elif value == 'med':
+            set_inner_state_a(user, '0')
+            set_state_a(user, 'get_attr_med')
+            get_attr_med(bot, user, msg)
+        elif value == 'it':
+            set_inner_state_a(user, '0')
+            set_state_a(user, 'get_attr_it')
+            get_attr_it(bot, user, msg)
+    return 
+
+
 def get_specific_type(bot, user, msg):
     print('get specific type')
 
 def get_fulltime_work(bot, user, msg):
-    print ('full time work')
+    print('set fulltime work')
+    set_state_a(user, 'get_area')
+    set_inner_state_a(user, '0')
+    get_area(bot, user, msg)
 
 def get_internship_work(bot, user, msg):
     print ('internship work')
@@ -277,6 +611,13 @@ def get_like_area(bot, user, msg):
     return
 
 
+def decline_for(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    bot.sendMessage(chat_id, 'На данный момент у нас нет для Вас информации', reply_markup = get_default_markup())
 
 def get_category(bot, user, msg):
     chat_id = getattr(user, 'chat_id')
@@ -307,7 +648,8 @@ def get_category(bot, user, msg):
             set_state_a(user, 'get_university')
             get_university(bot, user, msg)
         elif value == 100:
-            print ('sorry')
+            set_state_a(user, 'decline_for')
+            decline_for(bot, user, msg)
 
     return
 
@@ -506,7 +848,9 @@ class Logic:
     @staticmethod
     def state_machine(bot, user, msg):
         state = getattr(user, 'state')
-
+        istate = getattr(user, 'istate')
+        print(state + ' << current state')
+        print(istate + ' << current state')
         SM = {
             'init':  init,  
             'get_vk': get_vk,
@@ -523,7 +867,18 @@ class Logic:
             'get_season_work': get_season_work,
             'get_fulltime_work': get_fulltime_work,
             'get_internship_work': get_internship_work,
-            'get_specific_type': get_specific_type
+            'get_specific_type': get_specific_type,
+            'get_area': get_area,
+            'get_attr_pr': get_attr_pr,
+            'get_attr_med': get_attr_med,
+            'get_attr_it': get_attr_it,
+            'get_attr_pr_2':get_attr_pr_2,
+            'get_vacancies': get_vacancies,
+            'get_attr_it_2': get_attr_it_2,
+            'get_attr_med_2': get_attr_med_2,
+            'decline_for': decline_for,
+            'get_phone': get_phone,
+            'accept': accept
         }
 
         SM[state](bot,user, msg)
