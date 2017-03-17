@@ -47,6 +47,26 @@ def set_state_a(user, state):
     
 
 
+def get_proposal_1_1(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+
+    bot.sendMessage(chat_id, 'Проанализировав твои ответы, я советую обратить тебе внимание на ИТ ', reply_markup = get_default_markup())
+
+    bot.sendMessage(chat_id, 'Наиболее популярные направления: Разработка продуктов, Web-дизайн, Техническая поддержка', reply_markup = get_default_markup())
+
+    bot.sendMessage(chat_id, 'Поизучай http://it-uroki.ru/ www.it-world.ru/ https://habrahabr.ru/', reply_markup = get_default_markup())
+
+    bot.sendMessage(chat_id, 'рекомендуемые ВУЗы: Иннополис, МГТУ им.Баумана, МФТИ', reply_markup = get_default_markup())
+
+    set_state(user, 'get_phone')
+
+    return 
+
+
+
 def get_proposal_1(bot, user, msg):
     chat_id = getattr(user, 'chat_id')
     state = getattr(user, 'state')
@@ -70,7 +90,7 @@ def get_proposal_1(bot, user, msg):
 
         if value == 1:
             set_state_a(user, 'get_proposal_1_1')
-            # get_proposal_1(bot, user, msg)
+            get_proposal_1_1(bot, user, msg)
         elif value == 2:
             set_state_a(user, 'get_proposal_1_2')
             # get_proposal_2(bot, user, msg)
@@ -174,6 +194,22 @@ def get_phone(bot, user, msg):
 
     return
 
+
+
+
+
+def test(bot, user, msg):
+    chat_id = getattr(user, 'chat_id')
+    state = getattr(user, 'state')
+    istate = getattr(user, 'istate')
+
+    bot.sendMessage(chat_id, 'Мы рады сообщить, что у нас есть для тебя вакансия.')
+
+    set_state(user, 'get_phone')
+    get_phone(bot, user, msg)
+    return
+
+
 def get_vacancies(bot, user, msg):
     chat_id = getattr(user, 'chat_id')
     state = getattr(user, 'state')
@@ -182,7 +218,8 @@ def get_vacancies(bot, user, msg):
     attr = getattr(user, 'attr')
     vacancies = Vacancy.objects.filter(attr  =  attr)
 
-    options = {}
+    options = {
+    }
 
     for vacancy in vacancies:
         options[getattr(vacancy, 'name')] = vacancy
@@ -192,17 +229,21 @@ def get_vacancies(bot, user, msg):
         set_inner_state_a(user, '1')
         send_options(bot, user, options, 'Что Вам интереснее?')
     else:
-        value = get_options(bot, user, options, msg)
-        markedVacancy = MarkedVacancy(person = user, vacancy = value)
+        try:
+            value = get_options(bot, user, options, msg)
+            markedVacancy = MarkedVacancy(person = user, vacancy = value)
 
-        markedVacancy.save()
+            markedVacancy.save()
 
-        set_inner_state_a(user, '0')
-        if attr != 'Разработчик' and attr != 'Product owner' and attr != 'Дизайнер':
-            set_state_a(user, 'get_phone')
-            get_phone(bot, user, msg)
-        else: 
-            print('testing started')
+            set_inner_state_a(user, '0')
+            if attr != 'Разработчик' and attr != 'Product owner' and attr != 'Дизайнер':
+                set_state_a(user, 'get_phone')
+                get_phone(bot, user, msg)
+            else: 
+                set_state_a(user, 'test')
+                test(bot, user, msg)
+        except: 
+            set_inner_state_a(user, '0')
 
     return
 
@@ -635,20 +676,23 @@ def get_category(bot, user, msg):
         send_options(bot, user, options, 'Кем вы являетесь из нижеперечисленных категорий?')
         set_inner_state_a(user, '1')
     else: 
-        value = get_options(bot, user, options, msg)
-        user.category = value
-        set_inner_state_a(user, '0')
-        user.save()
+        try:
+            value = get_options(bot, user, options, msg)
+            user.category = value
+            set_inner_state_a(user, '0')
+            user.save()
 
-        if value == 1:
-            set_state_a(user, 'get_like_area')
-            get_like_area(bot, user, msg)
-        elif value == 2:
-            set_state_a(user, 'get_university')
-            get_university(bot, user, msg)
-        elif value == 100:
-            set_state_a(user, 'decline_for')
-            decline_for(bot, user, msg)
+            if value == 1:
+                set_state_a(user, 'get_like_area')
+                get_like_area(bot, user, msg)
+            elif value == 2:
+                set_state_a(user, 'get_university')
+                get_university(bot, user, msg)
+            elif value == 100:
+                set_state_a(user, 'decline_for')
+                decline_for(bot, user, msg)
+        except:
+            set_inner_state_a(user, '1')
 
     return
 
@@ -667,15 +711,18 @@ def get_photo(bot, user, msg):
             bot.sendMessage(chat_id, 'Плохая картинка)', reply_markup = get_default_markup())
             return
         else:
-            filename = str(uuid.uuid1()) + ".png"
-            
-            bot.download_file(msg['photo'][-1]['file_id'], './images/' + filename)
-            user.photo_url = filename
-            set_inner_state_a(user, '0')
-            set_state_a(user, 'get_category')
-            user.save()
+            try:
+                filename = str(uuid.uuid1()) + ".png"
+                
+                bot.download_file(msg['photo'][-1]['file_id'], './images/' + filename)
+                user.photo_url = filename
+                set_inner_state_a(user, '0')
+                set_state_a(user, 'get_category')
+                user.save()
 
-            get_category(bot, user, msg)
+                get_category(bot, user, msg)
+            except:
+                set_inner_state_a(user, '1')
 
     return
 
@@ -719,12 +766,15 @@ def get_city(bot, user, msg):
         send_options(bot, user, options, 'В каком городе вы живете?')
         set_inner_state_a(user, '1')
     else: 
-        value = get_options(bot, user, options, msg)
-        user.city = value
-        set_inner_state_a(user, '0')
-        set_state_a(user, 'get_photo')
-        user.save()
-        get_photo(bot, user, msg)
+        try:
+            value = get_options(bot, user, options, msg)
+            user.city = value
+            set_inner_state_a(user, '0')
+            set_state_a(user, 'get_photo')
+            user.save()
+            get_photo(bot, user, msg)
+        except:
+            set_inner_state_a(user, '0')
 
     return
 
@@ -787,12 +837,15 @@ def get_name(bot, user, msg):
         bot.sendMessage(chat_id, 'Ваше имя:', reply_markup = get_default_markup())
         return
     else: 
-        name = get_text_message(bot, user, msg)
-        user.name = name
-        set_inner_state_a(user, '0')
-        user.save()
-        set_state_a(user, 'get_city')
-        get_city(bot, user, msg)
+        try:
+            name = get_text_message(bot, user, msg)
+            user.name = name
+            set_inner_state_a(user, '0')
+            user.save()
+            set_state_a(user, 'get_city')
+            get_city(bot, user, msg)
+        except:
+            set_inner_state_a(user, '0')
 
     return
 
@@ -808,19 +861,22 @@ def init(bot, user, msg):
             };
 
     if istate == '0':
-        send_options(bot, user, options, 'Has vk?')
+        send_options(bot, user, options, 'Есть ли аккаунт в vk?')
         set_inner_state_a(user, '1')
     elif istate == '1':
-        result = get_options(bot, user, options, msg)
+        try:
+            result = get_options(bot, user, options, msg)
 
-        set_inner_state_a(user, '0')
-        
-        if result == 'yes':
-            set_state_a(user, 'get_vk')
-            get_vk(bot, user, msg)    
-        else:
-            set_state_a(user, 'get_name')
-            get_name(bot, user, msg)
+            set_inner_state_a(user, '0')
+            
+            if result == 'yes':
+                set_state_a(user, 'get_vk')
+                get_vk(bot, user, msg)    
+            else:
+                set_state_a(user, 'get_name')
+                get_name(bot, user, msg)
+        except:
+            set_inner_state_a(user, '0')
 
     return
 
@@ -872,7 +928,8 @@ class Logic:
             'get_attr_med_2': get_attr_med_2,
             'decline_for': decline_for,
             'get_phone': get_phone,
-            'accept': accept
+            'accept': accept,
+            'test': test
         }
 
         SM[state](bot,user, msg)
