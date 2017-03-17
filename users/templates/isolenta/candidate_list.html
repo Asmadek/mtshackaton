@@ -50,8 +50,11 @@
         </div>
         <div class="right floated content">
             <button class="ui olive basic button">В ожидании</button>
-            <button class="ui blue basic button">АХО</button>
-            <button class="ui green basic button">Выполнил работу</button>
+            {% for vacancy in candidate.vacancies %}
+                <div class="ui brown basic label">
+                    {{vacancy.vacancy.name}}
+                </div>
+            {% endfor %}
         </div>
 
         <img class="ui avatar image" src="{{candidate.photo_url}}">
