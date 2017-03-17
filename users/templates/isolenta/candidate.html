@@ -32,12 +32,22 @@
 {% endblock %}
 
 {% block content %}
-    <div class="three wide column">
+  <div class="ui grid">
+    <div class="four wide column">
+                        {% load static %}
 
       <!--  АНКЕТА Сотрудник  -->
       <div class="ui card">
         <div class="image">
-          <img src="{{data.photo_url}}">
+          {% comment %}{% if candidate.is_vk_photo == 1 %}
+            <img src="{{data.photo_url}}">
+          {% else %}
+              {% load static %}
+              <img src="{% static candidate.our_photo %}">
+          {% endif %}{% endcomment %}
+
+          <img src="{% static "our958cf49c-0b10-11e7-b5f2-b8e85618abc6.png" %}">
+
         </div>
         <div class="content">
           <a class="header">{{data.name}}</a>
@@ -101,7 +111,7 @@
             <td>
               <i class="folder icon"></i> Email
             </td>
-            <td>mara@mail.ru</td>
+            <td>hackathon@mts.ru</td>
           </tr>
           <tr>
             <td>
@@ -111,7 +121,7 @@
           </tr>
         </tbody>
       </table>
-      <h4><i class="vk icon"></i>Вконтакте</h4>
+      <h4><i class="vk icon"></i><a href="https://vk.com/{{candidate.vk}}">Вконтакте</a></h4>
       <table class="ui table">
         <tbody>
             <tr>
@@ -151,7 +161,7 @@
                     <tr>
                       <td>
                         <h4 class="ui image header">
-                          <img src="images/avatar/image-14.png" class="ui mini rounded image">
+                          <img src="{% static "avatar/image-14.png" %}" class="ui mini rounded image">
                           <div class="content">
                             Михайлова Елена
                             <div class="sub header">Старший специалист</div>
@@ -170,4 +180,5 @@
         </tbody>
       </table>
     </div>
+  </div>
 {% endblock %}

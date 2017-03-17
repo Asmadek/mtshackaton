@@ -713,8 +713,8 @@ def get_photo(bot, user, msg):
             return
         else:
             try:
-                filename =  '/images/' + str(uuid.uuid1()) + ".png"
-                saveto = str(uuid.uuid1()) + ".png"
+                filename =  'our' + str(uuid.uuid1()) + ".png"
+                saveto = 'our' + str(uuid.uuid1()) + ".png"
 
                 bot.download_file(msg['photo'][-1]['file_id'], './images/' + saveto)
                 user.photo_url = filename

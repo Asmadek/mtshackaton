@@ -125,4 +125,3 @@ def get_bdate(bdate):
         return None
 def get_university_by_name(university_name):
     return University.objects.get_or_create(name=university_name, defaults={'rating': 100})[0]
-         

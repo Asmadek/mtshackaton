@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.staticfiles.templatetags.staticfiles import static
+
 
 # Create your models here.
 
@@ -47,6 +49,20 @@ class Person(models.Model):
             return "Студент"
         else: 
             return "Другое"
+    
+    @property
+    def is_vk_photo(self):
+        print(self.photo_url[:3])
+        if self.photo_url[:3] == "our":
+            return 0
+        else:
+            return 1
+    
+    @property
+    def our_photo(self):
+        url = self.photo_url
+        return str(url)
+
 
 
     state = models.CharField(max_length=128, blank=True)
