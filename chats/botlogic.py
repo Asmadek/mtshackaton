@@ -185,7 +185,7 @@ def get_phone(bot, user, msg):
     else:
         try:
             phone = get_text_message(bot, user, msg)
-            user.phone = phone
+            user.phone_number = phone
             set_inner_state_a(user, '0')
             user.save()
             set_state_a(user, 'accept')
@@ -206,7 +206,7 @@ def test(bot, user, msg):
 
     bot.sendMessage(chat_id, 'Мы рады сообщить, что у нас есть для тебя вакансия.')
 
-    set_state(user, 'get_phone')
+    set_state_a(user, 'get_phone')
     get_phone(bot, user, msg)
     return
 
@@ -713,9 +713,10 @@ def get_photo(bot, user, msg):
             return
         else:
             try:
-                filename = str(uuid.uuid1()) + ".png"
-                
-                bot.download_file(msg['photo'][-1]['file_id'], './images/' + filename)
+                filename =  '/images/' + str(uuid.uuid1()) + ".png"
+                saveto = str(uuid.uuid1()) + ".png"
+
+                bot.download_file(msg['photo'][-1]['file_id'], './images/' + saveto)
                 user.photo_url = filename
                 set_inner_state_a(user, '0')
                 set_state_a(user, 'get_category')
