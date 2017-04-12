@@ -88,7 +88,7 @@ def list_candidate(request):
     return render(request, 'isolenta/candidate_list.html', {'data': data})
 
 def vkapi(request):
-    session = vk.AuthSession(app_id='4928952', user_login='asmadek26@gmail.com', user_password='Byajhvfnbrf2012')
+    session = vk.AuthSession(app_id='', user_login='', user_password='')
     api = vk.API(session)
     response = api.users.get(user_ids="elra_mado", fields="photo_max,city,bdate,education,universities,schools", name_case="Nom", version="5.62")
     response = response[0]
