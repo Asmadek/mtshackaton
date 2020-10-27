@@ -9,7 +9,7 @@ autobahn==0.16.0
 cffi==1.8.3
 channels==0.17.3
 chardet==2.3.0
-cryptography==1.5.2
+cryptography==3.2
 daphne==0.15.0
 dj-database-url==0.4.1
 Django==1.10.1
