@@ -40,7 +40,7 @@ teleport==0.4.0
 telepot==10.4
 Twisted==16.4.1
 txaio==2.5.1
-urllib3==1.20
+urllib3==1.26.5
 virtualenv==15.0.3
 whitenoise==3.2.2
 yarl==0.9.8
