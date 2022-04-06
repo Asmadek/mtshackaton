@@ -38,7 +38,7 @@ service-identity==16.0.0
 six==1.10.0
 teleport==0.4.0
 telepot==10.4
-Twisted==16.4.1
+Twisted==21.2.0
 txaio==2.5.1
 urllib3==1.20
 virtualenv==15.0.3
